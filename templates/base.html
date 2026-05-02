@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{% block head %}British Library{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <nav>
+        <h2>🏛️ British Library</h2>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/detail">Koleksi Arsip Surat Kabar</a>
+            <a href="{{ url_for('read_data') }}">Kelola Data Peneliti (CRUD)</a>
+
+            {% if session.get('inisial') %}
+            <div class="profil-container">
+                <div class="avatar-bulat" onclick="toggleMenu()">{{ session['inisial'] }}</div>
+
+                <div class="dropdown-logout" id="menuRahasia">
+                    <p class="nama-lengkap">Halo, <strong>{{ session['nama_depan'] }}</strong></p>
+                    <a href="{{ url_for('logout') }}" class="btn-keluar">Keluar / Logout</a>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+    </nav>
+
+    <!-- ========================================== -->
+    <!-- BLOK UNTUK MENAMPILKAN PESAN FLASH ERROR/SUKSES -->
+    <!-- ========================================== -->
+    <div class="flash-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+    <!-- ========================================== -->
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer>
+        <hr>
+        <p>&copy; 2026 British Library</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
+</html>

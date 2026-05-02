@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block head %}Pendaftaran Peneliti - British Library{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <h2 class="auth-title">Form Pendaftaran Peneliti</h2>
+
+        <form action="/register" method="POST">
+            <label for="nama_depan">Nama Depan:</label>
+            <input type="text" id="nama_depan" name="nama_depan" required placeholder="Masukkan Nama Depan">
+
+            <label for="nama_belakang">Nama Belakang:</label>
+            <input type="text" id="nama_belakang" name="nama_belakang" required placeholder="Masukan Nama Belakang">
+
+            <label for="alamat_email">Alamat Email:</label>
+            <input type="email" id="alamat_email" name="alamat_email" required placeholder="email@contoh.com">
+
+            <label for="bidang_keahlian">Bidang Keahlian:</label>
+            <select id="bidang_keahlian" name="bidang_keahlian" required>
+                <option value="" disabled selected>Pilih Bidang Keahlian...</option>
+                <option value="Sejarah">Sejarah</option>
+                <option value="Sosiologi">Sosiologi</option>
+                <option value="Antropologi">Antropologi</option>
+                <option value="Sastra">Sastra</option>
+                <option value="Lainnya">Lainnya</option>
+            </select>
+
+            <label for="kata_sandi">Kata Sandi:</label>
+            <input type="password" id="kata_sandi" name="kata_sandi" required minlength="8"
+                placeholder="Buat kata sandi minimal 8 karakter">
+
+            <button type="submit" class="btn-utama" style="width: 100%;">Daftar Sekarang</button>
+        </form>
+
+        <p class="auth-footer">Sudah punya akun? <a href="{{ url_for('login') }}">Login di sini</a></p>
+    </div>
+</div>
+{% endblock %}

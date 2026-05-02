@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block head %}Login Peneliti - British Library{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <h2 class="auth-title">Login Peneliti</h2>
+
+        <form action="/login" method="POST">
+            <label for="email">Alamat Email:</label>
+            <input type="email" id="email" name="alamat_email" placeholder="Masukkan email terdaftar" required>
+
+            <label for="password">Kata Sandi:</label>
+            <input type="password" id="password" name="kata_sandi" placeholder="Masukkan kata sandi" required
+                minlength="8">
+
+            <button type="submit" class="btn-utama">Masuk</button>
+        </form>
+
+        <p class="auth-footer">Belum punya akun? <a href="{{ url_for('register') }}">Daftar di sini</a></p>
+    </div>
+</div>
+{% endblock %}

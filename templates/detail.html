@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+
+{% block head %}Koleksi Arsip - British Library{% endblock %}
+
+{% block content %}
+<div class="header-halaman">
+    <h1>Daftar Koleksi Arsip Surat Kabar</h1>
+    <p>Berikut adalah rincian seluruh arsip surat kabar yang telah dikelola dan didigitalisasi dalam repositori awan
+        kami.</p>
+</div>
+
+<div class="table-search-container">
+    <!-- Tambah value="{{ query }}" agar bisa langsung menemukan judul-->
+    <input type="text" id="cariTabel" onkeyup="filterTabel()" placeholder="🔍 Cari nama koran, tahun, atau kategori..." value="{{ query }}">
+</div>
+
+<div class="table-wrapper">
+    <table id="tabelKoleksi">
+        <thead>
+            <tr>
+                <th>Nama Surat Kabar</th>
+                <th>Tahun Terbit</th>
+                <th>Kategori Utama</th>
+                <th>Dokumen Digital</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>The Morning Chronicle</td>
+                <td>1769</td>
+                <td>Politik & Berita Umum</td>
+                <td>
+                    <a href="{{ url_for('static', filename='pdf/The_Morning_Chronicle.pdf') }}" target="_blank"
+                        class="btn-pdf">📄
+                        Buka PDF</a>
+                </td>
+
+            </tr>
+            <tr>
+                <td>The Morning Post</td>
+                <td>1772</td>
+                <td>Sastra & Seni</td>
+                <td>
+                    <a href="{{ url_for('static', filename='pdf/The_Morning_Post.pdf') }}" target="_blank"
+                        class="btn-pdf">📄
+                        Buka PDF</a>
+                </td>
+            </tr>
+            <tr>
+                <td>The Daily Universal Register</td>
+                <td>1785</td>
+                <td>Berita Umum</td>
+                <td><a href="javascript:void(0);" class="btn-pdf">📄 Buka PDF</a></td>
+            </tr>
+            <tr>
+                <td>The Times</td>
+                <td>1788</td>
+                <td>Politik Nasional</td>
+                <td><a href="javascript:void(0);" class="btn-pdf">📄 Buka PDF</a></td>
+            </tr>
+            <tr>
+                <td>The Observer</td>
+                <td>1791</td>
+                <td>Investigasi & Sosial</td>
+                <td><a href="javascript:void(0);" class="btn-pdf">📄 Buka PDF</a></td>
+            </tr>
+            <tr>
+                <td>The Courier</td>
+                <td>1792</td>
+                <td>Berita Malam</td>
+                <td><a href="javascript:void(0);" class="btn-pdf">📄 Buka PDF</a></td>
+            </tr>
+            <tr>
+                <td>The Globe</td>
+                <td>1803</td>
+                <td>Berita Internasional</td>
+                <td><a href="javascript:void(0);" class="btn-pdf">📄 Buka PDF</a></td>
+            </tr>
+            <tr>
+                <td>The Manchester Guardian</td>
+                <td>1821</td>
+                <td>Ekonomi & Berita Umum</td>
+                <td>
+                    <a href="{{ url_for('static', filename='pdf/The_Manchester_Guardian.pdf') }}" target="_blank" class="btn-pdf">📄
+                        Buka PDF</a>
+                </td>
+            </tr>
+            <tr>
+                <td>The Sunday Times</td>
+                <td>1822</td>
+                <td>Sastra & Gaya Hidup</td>
+                <td><a href="javascript:void(0);" class="btn-pdf">📄 Buka PDF</a></td>
+            </tr>
+            <tr>
+                <td>The Standard</td>
+                <td>1827</td>
+                <td>Politik Konservatif</td>
+                <td><a href="javascript:void(0);" class="btn-pdf">📄 Buka PDF</a></td>
+            </tr>
+            <tr>
+                <td>Lloyd's Weekly Newspaper</td>
+                <td>1842</td>
+                <td>Berita Populer</td>
+                <td><a href="javascript:void(0);" class="btn-pdf">📄 Buka PDF</a></td>
+            </tr>
+            <tr>
+                <td>The Illustrated London News</td>
+                <td>1842</td>
+                <td>Seni Visual & Fotografi</td>
+                <td><a href="javascript:void(0);" class="btn-pdf">📄 Buka PDF</a></td>
+            </tr>
+            <tr>
+                <td>The News of the World</td>
+                <td>1843</td>
+                <td>Hiburan & Kriminal</td>
+                <td><a href="javascript:void(0);" class="btn-pdf">📄 Buka PDF</a></td>
+            </tr>
+            <tr>
+                <td>Reynolds's Newspaper</td>
+                <td>1850</td>
+                <td>Opini Pekerja</td>
+                <td><a href="javascript:void(0);" class="btn-pdf">📄 Buka PDF</a></td>
+            </tr>
+            <tr>
+                <td>The Daily Telegraph</td>
+                <td>1855</td>
+                <td>Berita Internasional</td>
+                <td><a href="javascript:void(0);" class="btn-pdf">📄 Buka PDF</a></td>
+            </tr>
+            <tr>
+                <td>The Pall Mall Gazette</td>
+                <td>1865</td>
+                <td>Kritik Sastra & Politik</td>
+                <td><a href="javascript:void(0);" class="btn-pdf">📄 Buka PDF</a></td>
+            </tr>
+            <tr>
+                <td>The Echo</td>
+                <td>1868</td>
+                <td>Berita Harian Murah</td>
+                <td><a href="javascript:void(0);" class="btn-pdf">📄 Buka PDF</a></td>
+            </tr>
+            <tr>
+                <td>The Graphic</td>
+                <td>1869</td>
+                <td>Ilustrasi & Sosial</td>
+                <td><a href="javascript:void(0);" class="btn-pdf">📄 Buka PDF</a></td>
+            </tr>
+            <tr>
+                <td>The Daily Chronicle</td>
+                <td>1872</td>
+                <td>Politik Liberal</td>
+                <td><a href="javascript:void(0);" class="btn-pdf">📄 Buka PDF</a></td>
+            </tr>
+            <tr>
+                <td>The Evening News</td>
+                <td>1881</td>
+                <td>Berita Sore & Olahraga</td>
+                <td><a href="javascript:void(0);" class="btn-pdf">📄 Buka PDF</a></td>
+            </tr>
+            <tr>
+                <td>The Star</td>
+                <td>1888</td>
+                <td>Opini Radikal</td>
+                <td><a href="javascript:void(0);" class="btn-pdf">📄 Buka PDF</a></td>
+            </tr>
+            <tr>
+                <td>The Westminster Gazette</td>
+                <td>1893</td>
+                <td>Analisis Politik</td>
+                <td><a href="javascript:void(0);" class="btn-pdf">📄 Buka PDF</a></td>
+            </tr>
+            <tr>
+                <td>The Daily Mail</td>
+                <td>1896</td>
+                <td>Gaya Hidup & Pasar Menengah</td>
+                <td><a href="javascript:void(0);" class="btn-pdf">📄 Buka PDF</a></td>
+            </tr>
+            <tr>
+                <td>The Daily Express</td>
+                <td>1900</td>
+                <td>Berita Nasional</td>
+                <td><a href="javascript:void(0);" class="btn-pdf">📄 Buka PDF</a></td>
+            </tr>
+            <tr>
+                <td>The Daily Mirror</td>
+                <td>1903</td>
+                <td>Foto Jurnalistik</td>
+                <td><a href="javascript:void(0);" class="btn-pdf">📄 Buka PDF</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<script>
+    window.onload = function() {
+        var kotakCari = document.getElementById("cariTabel");
+        if (kotakCari && kotakCari.value.trim() !== "") {
+            filterTabel(); // Memanggil fungsi JS milikmu di main.js
+        }
+    };
+</script>
+
+
+{% endblock %}
