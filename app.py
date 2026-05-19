@@ -1,10 +1,13 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, abort, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash
+from werkzeug.utils import secure_filename
 from models import db, Institusi, Peneliti, SuratKabar, Edisi
 
 app = Flask(__name__)
 
-# Konfigurasi Database
+# ==========================================
+# KONFIGURASI APLIKASI & DATABASE
+# ==========================================
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'british_library.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -12,18 +15,35 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Kunci rahasia untuk mengamankan Session
 app.secret_key = 'kunci_rahasia_british_library_super_aman'
 
+# --- PERBAIKAN 1: PENGATURAN FOLDER UPLOAD ---
+# Ini wajib ditaruh di sini agar sistem tahu ke mana PDF harus disimpan
+UPLOAD_FOLDER = os.path.join('static', 'uploads', 'pdf')
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# Perintah agar Python otomatis membuat foldernya kalau belum ada
+if not os.path.exists(app.config['UPLOAD_FOLDER']):
+    os.makedirs(app.config['UPLOAD_FOLDER'])
+
 db.init_app(app)
+
 # ==========================================
-# 1. HALAMAN UTAMA (TERKUNCI!)
+# 1. HALAMAN UTAMA (DIBUKA UNTUK PUBLIK)
 # ==========================================
 @app.route('/')
 def home():
-    # CEK KARTU PENGUNJUNG: Jika tidak ada session 'user_id', usir ke halaman login
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
+    # Menghitung jumlah data langsung dari database
+    total_koran = SuratKabar.query.count()
+    total_edisi = Edisi.query.count()
+    total_peneliti = Peneliti.query.count()
     
-    return render_template('index.html', nama_user=session['nama_depan'])
-
+    nama = session.get('nama_depan', 'Pengunjung')
+    
+    # Kirim variabel jumlah ke template index.html
+    return render_template('index.html', 
+                           nama_user=nama, 
+                           total_sk=total_koran, 
+                           total_ea=total_edisi, 
+                           total_p=total_peneliti)
 # ==========================================
 # 2. RUTE LOGIN & LOGOUT
 # ==========================================
@@ -38,33 +58,32 @@ def login():
         if user:
             session['user_id'] = user.id_peneliti
             session['nama_depan'] = user.nama_depan
-            
-            # --- TAMBAHAN UNTUK INISIAL ---
+
+            # JALUR VIP ADMIN
+            if email == 'adminbritishlibrary@gmail.com':  
+                session['role'] = 'admin'
+            else:
+                session['role'] = 'peneliti'
+
             inisial = f"{user.nama_depan[0]}{user.nama_belakang[0]}".upper()
             session['inisial'] = inisial
-            # PESAN LOGIN SUKSES
+            
             flash('Login berhasil! Selamat datang di British Library.', 'success')
-
             return redirect(url_for('home'))
+
         else:
-            # ---  KOTAK ERROR  ---
             flash('Login Gagal: Email atau Kata Sandi salah!', 'error')
             return redirect(url_for('login'))
-            # -------------------------------------------------------
             
     return render_template('login.html')
-# ==========================================
-# RUTE LOGOUT
-# ==========================================
+
 @app.route('/logout')
 def logout():
-    # Hapus semua data dari Kartu Pengunjung (Session)
-    session.pop('user_id', None)
-    session.pop('nama_depan', None)
-    session.pop('inisial', None)
+    session.clear() # Cara lebih bersih untuk menghapus semua session
     return redirect(url_for('login'))
+
 # ==========================================
-# 3. RUTE REGISTER (CREATE)
+# 3. RUTE REGISTER (CREATE PENELITI)
 # ==========================================
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -94,27 +113,26 @@ def register():
             
         except Exception as e:
             db.session.rollback()
-            return f"Terjadi kesalahan Database: {str(e)}", 500
+            flash('Pendaftaran Gagal: Email tersebut sudah terdaftar!', 'error')
+            return redirect(url_for('register'))
 
     return render_template('register.html')
 
 # ==========================================
-# 4. RUTE DETAIL KOLEKSI
+# 4. HALAMAN DAFTAR SURAT KABAR & EDISI
 # ==========================================
-@app.route('/detail')
-def detail():
-    # Tangkap kata kunci dan tahun dari form pencarian di Home (jika ada)
-    kata_kunci = request.args.get('kata_kunci', '')
-    tahun = request.args.get('tahun', '')
-    
-    # Gabungkan teksnya. Misal user isi "The Times" dan "1788", jadi "The Times 1788"
-    query_pencarian = f"{kata_kunci} {tahun}".strip()
-    
-    # Kirim query tersebut ke halaman detail.html
-    return render_template('detail.html', query=query_pencarian)
+@app.route('/surat_kabar')
+def surat_kabar():
+    semua_koran = SuratKabar.query.all()
+    return render_template('surat_kabar.html', data_koran=semua_koran)
+
+@app.route('/edisi_arsip')
+def edisi_arsip():
+    semua_edisi = Edisi.query.all()
+    return render_template('edisi_arsip.html', data_edisi=semua_edisi)
 
 # ==========================================
-# 5. RUTE TUGAS 11 (CRUD: READ, UPDATE, DELETE)
+# 5. CRUD PENELITI (TUGAS 11)
 # ==========================================
 @app.route('/peneliti')
 def read_data():
@@ -127,9 +145,13 @@ def update(id):
 
     if request.method == 'POST':
         try:
+            # --- PERBAIKAN 2: UPDATE SEMUA FIELD ---
             peneliti.nama_depan = request.form.get('nama_depan')
             peneliti.nama_belakang = request.form.get('nama_belakang')
+            peneliti.alamat_email = request.form.get('alamat_email')
+            peneliti.bidang_keahlian = request.form.get('bidang_keahlian')
             db.session.commit() 
+            flash('Data peneliti berhasil diupdate!', 'success')
             return redirect(url_for('read_data'))
         except Exception as e:
             db.session.rollback()
@@ -149,15 +171,130 @@ def delete(id):
         return "Delete Gagal", 500
 
 # ==========================================
+# 6. CRUD SURAT KABAR (Koleksi Arsip) KHUSUS ADMIN
+# ==========================================
+@app.route('/tambah_koleksi', methods=['GET', 'POST'])
+def tambah_koleksi():
+    # Validasi Admin
+    if session.get('role') != 'admin':
+        return redirect(url_for('home'))
+
+    if request.method == 'POST':
+        nama = request.form.get('nama_suratkabar')
+        kota = request.form.get('kota_terbit')
+        tahun = request.form.get('tahun_berdiri')
+        penerbit = request.form.get('penerbit')
+        bahasa = request.form.get('bahasa_utama')
+
+        file = request.files.get('file_pdf')
+        nama_file_pdf = None 
+        
+        if file and file.filename != '':
+            nama_file_pdf = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], nama_file_pdf))
+        
+        koleksi_baru = SuratKabar(
+            nama_suratkabar=nama,
+            kota_terbit=kota,
+            tahun_berdiri=tahun,
+            penerbit=penerbit,
+            bahasa_utama=bahasa,
+            dokumen_digital=nama_file_pdf 
+        )
+        
+        db.session.add(koleksi_baru)
+        db.session.commit() 
+        
+        flash('Koleksi surat kabar dan PDF berhasil ditambahkan!', 'success')
+        return redirect(url_for('surat_kabar'))
+
+    return render_template('tambah_koleksi.html')
+
+@app.route('/edit_koleksi/<int:id>', methods=['GET', 'POST'])
+def edit_koleksi(id):
+    if session.get('role') != 'admin':
+        return redirect(url_for('home'))
+        
+    koran = SuratKabar.query.get_or_404(id)
+    
+    if request.method == 'POST':
+        koran.nama_suratkabar = request.form['nama_suratkabar']
+        koran.penerbit = request.form['penerbit']
+        db.session.commit()
+        # --- PERBAIKAN 3: KEMBALI KE surat_kabar, bukan kelola_koleksi ---
+        return redirect(url_for('surat_kabar'))
+        
+    return render_template('edit_koleksi.html', k=koran)
+
+@app.route('/hapus_koleksi/<int:id>')
+def hapus_koleksi(id):
+    if session.get('role') != 'admin':
+        return redirect(url_for('home'))
+        
+    koran = SuratKabar.query.get_or_404(id)
+    db.session.delete(koran)
+    db.session.commit()
+    # --- PERBAIKAN 4: KEMBALI KE surat_kabar, bukan kelola_koleksi ---
+    return redirect(url_for('surat_kabar'))
+
+@app.route('/tambah_edisi', methods=['GET', 'POST'])
+def tambah_edisi():
+    if session.get('role') != 'admin':
+        return redirect(url_for('home'))
+
+    # Ambil daftar koran untuk dropdown di form
+    daftar_koran = SuratKabar.query.all()
+
+    if request.method == 'POST':
+        file = request.files.get('file_pdf')
+        nama_file_pdf = None
+        
+        if file and file.filename != '':
+            nama_file_pdf = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], nama_file_pdf))
+        
+        edisi_baru = Edisi(
+            id_suratkabar=request.form.get('id_suratkabar'),
+            tanggal_terbit=request.form.get('tanggal_terbit'),
+            jumlah_halaman=request.form.get('jumlah_halaman'),
+            format_digital=request.form.get('format_digital'),
+            status_kelengkapan=request.form.get('status_kelengkapan'),
+            file_path=nama_file_pdf 
+        
+        )
+        db.session.add(edisi_baru)
+        db.session.commit()
+        flash('Edisi arsip berhasil diunggah!', 'success')
+        return redirect(url_for('edisi_arsip'))
+
+    return render_template('tambah_edisi.html', koran=daftar_koran)
+
+@app.route('/hapus_edisi/<int:id>')
+def hapus_edisi(id):
+    if session.get('role') != 'admin':
+        return redirect(url_for('home'))
+        
+    edisi = Edisi.query.get_or_404(id)
+    try:
+        db.session.delete(edisi)
+        db.session.commit()
+        flash('Edisi berhasil dihapus!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash('Gagal menghapus data.', 'error')
+        
+    return redirect(url_for('edisi_arsip'))
+# ==========================================
 # EKSEKUSI SERVER & DATABASE SETUP
 # ==========================================
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-        # Membuat 1 Institusi otomatis agar tidak error Foreign Key
         if not Institusi.query.first():
             inst_default = Institusi(nama_institusi="British Library", negara="UK")
             db.session.add(inst_default)
             db.session.commit()
             
     app.run(debug=True)
+
+    

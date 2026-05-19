@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Kelola Koleksi Koran - British Library</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f9; padding: 20px;">
+
+    <div class="container" style="max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #5c0c0c; padding-bottom: 10px; margin-bottom: 20px;">
+            <h2 style="color: #5c0c0c; margin: 0;">📚 Manajemen Koleksi Surat Kabar</h2>
+            <a href="{{ url_for('home') }}" style="text-decoration: none; color: #5c0c0c; font-weight: bold;">&larr; Kembali ke Home</a>
+        </div>
+        
+        <a href="{{ url_for('tambah_koleksi') }}" style="display: inline-block; background-color: #5c0c0c; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px; margin-bottom: 20px; font-weight: bold;">+ Tambah Koleksi Baru</a>
+        
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr style="background-color: #5c0c0c; color: white;">
+                <th style="padding: 10px; border: 1px solid #ddd;">ID</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Nama Surat Kabar</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Penerbit</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">File Dokumen</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Aksi</th>
+            </tr>
+            {% for k in data_koran %}
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd; text-align: center;"><strong>{{ k.id_suratkabar }}</strong></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">{{ k.nama_suratkabar }}</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">{{ k.penerbit }}</td>
+                <td style="padding: 10px; border: 1px solid #ddd; color: gray;">{{ k.file_pdf }}</td>
+                <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">
+                    <div style="display: flex; gap: 5px; justify-content: center;">
+                        <a href="/edit_koleksi/{{ k.id_suratkabar }}" style="background-color: #28a745; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px; font-size: 12px;">Edit</a>
+                        <a href="/hapus_koleksi/{{ k.id_suratkabar }}" style="background-color: #dc3545; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px; font-size: 12px;" onclick="return confirm('Yakin ingin menghapus koran ini?')">Hapus</a>
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" style="padding: 20px; text-align: center; color: gray; border: 1px solid #ddd;">Belum ada koleksi surat kabar. Silakan tambah baru.</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</body>
+</html>

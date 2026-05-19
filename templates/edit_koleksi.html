@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <title>Edit Koleksi Koran</title>
+</head>
+<body style="font-family: Arial; padding: 40px; background-color: #f4f4f9;">
+    
+    <div style="max-width: 400px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+        <h2 style="color: #28a745; text-align: center;">Edit Koleksi Koran</h2>
+        
+        <form action="/edit_koleksi/{{ k.id_suratkabar }}" method="POST">
+            <label style="font-weight: bold;">Nama Surat Kabar:</label>
+            <input type="text" name="nama_suratkabar" value="{{ k.nama_suratkabar }}" required style="width: 100%; margin-bottom: 15px; padding: 8px; box-sizing: border-box;"><br>
+            
+            <label style="font-weight: bold;">Penerbit / Kota:</label>
+            <input type="text" name="penerbit" value="{{ k.penerbit }}" required style="width: 100%; margin-bottom: 25px; padding: 8px; box-sizing: border-box;"><br>
+            
+            <button type="submit" style="padding: 10px; background: #28a745; color: white; border: none; width: 100%; cursor: pointer; border-radius: 5px; font-weight: bold;">Simpan Perubahan</button>
+            
+            <div style="text-align: center; margin-top: 15px;">
+                <a href="{{ url_for('kelola_koleksi') }}" style="color: gray; text-decoration: none; font-size: 14px;">&larr; Batal</a>
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-container" style="display: flex; justify-content: center; align-items: center; padding: 40px 20px;">
+    
+    <div class="form-container" style="width: 100%; max-width: 550px; padding: 40px; border-top: 5px solid #2e1a0f;">
+        <h2 style="text-align: center; color: #2e1a0f; margin-top: 0; border-bottom: 2px solid #e0dcd3; padding-bottom: 15px; margin-bottom: 25px;">
+            Tambah Koleksi Surat Kabar
+        </h2>
+        
+        <form action="{{ url_for('tambah_koleksi') }}" method="POST" enctype="multipart/form-data">
+            
+            <label>Nama Surat Kabar:</label>
+            <input type="text" name="nama_suratkabar" placeholder="Contoh: The Times of Java" required>
+            
+            <div style="display: flex; gap: 15px;">
+                <div style="flex: 1;">
+                    <label>Kota Terbit:</label>
+                    <input type="text" name="kota_terbit" required>
+                </div>
+                <div style="flex: 1;">
+                    <label>Tahun Berdiri:</label>
+                    <input type="number" name="tahun_berdiri" required>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 15px;">
+                <div style="flex: 1;">
+                    <label>Penerbit:</label>
+                    <input type="text" name="penerbit">
+                </div>
+                <div style="flex: 1;">
+                    <label>Bahasa Utama:</label>
+                    <input type="text" name="bahasa_utama" required>
+                </div>
+            </div>
+
+            <label>Unggah Dokumen Digital (PDF):</label>
+            <input type="file" name="file_pdf" accept=".pdf" style="width: 100%; padding: 12px; margin-bottom: 25px; border: 1px dashed #c69c3d; background-color: #fcfbf9; border-radius: 4px; box-sizing: border-box;" required>
+
+            <div style="display: flex; gap: 15px;">
+                <a href="{{ url_for('surat_kabar') }}" class="btn-submit" style="background-color: #f4f1ea; color: #666; border: 1px solid #ccc; text-align: center; text-decoration: none; flex: 1; display: inline-block; box-sizing: border-box;">Batal</a>
+                
+                <button type="submit" class="btn-submit" style="background-color: #2e1a0f; flex: 1;">Simpan Koleksi</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

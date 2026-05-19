@@ -1,100 +1,43 @@
-{% extends "base.html" %}
-
-{% block head %}Pencarian Teks - British Library{% endblock %}
+{% extends 'base.html' %}
 
 {% block content %}
-<div class="header-halaman">
-    <h1>Pencarian Teks Lengkap</h1>
-    <p>Silakan masukkan detail kata kunci untuk mencari arsip surat kabar:</p>
-</div>
-
-<div class="form-container">
-    <form action="/detail" method="GET">
-        <label for="kata_kunci">Kata Kunci Utama:</label>
-        <input type="text" id="kata_kunci" name="kata_kunci" placeholder="Contoh: The Times">
-
-        <label for="tahun">Tahun Terbit:</label>
-        <input type="number" id="tahun" name="tahun" placeholder="Contoh: 1788">
-
-        <button type="submit">Cari</button>
-    </form>
-</div>
-
-<div class="kategori-section">
-    <div class="kategori-header">
-        <span class="kategori-subtitle">REPOSITORI DIGITAL</span>
-        <h2>Koleksi Unggulan</h2>
-    </div>
-
-    <div class="kategori-section">
-    <div class="kategori-header">
-        <span class="kategori-subtitle">REPOSITORI DIGITAL</span>
-        <h2>Koleksi Unggulan</h2>
-    </div>
+<div class="hero-section">
+    <h1>British Library<br>Arsip Surat Kabar Digital</h1>
+    <p>Sistem pengelolaan dan digitalisasi koleksi surat kabar bersejarah &mdash;<br>metadata, teks, dan akses penelitian dalam satu platform.</p>
     
-    <div class="kategori-grid">
+    <div class="hero-buttons">
+        {% if session.get('role') == 'admin' %}
+            <a href="#" class="btn btn-gold">📥 Unggah Edisi Baru</a>
+            <a href="{{ url_for('read_data') }}" class="btn btn-outline">👤 Daftar Peneliti</a>
+            <a href="{{ url_for('tambah_koleksi') }}" class="btn btn-outline">📄 Tambah Surat Kabar</a>
+        {% endif %}
+    </div>
+</div>
 
-        <div class="kategori-card">
-            <img src="{{ url_for('static', filename='img/edwardian.jpg') }}" alt="Era Edwardian">
-            <div class="kategori-content">
-                <span class="kategori-tag">1900 — 1914</span>
-                <h3>Era Edwardian</h3>
-                <p>Koleksi surat kabar lokal yang mencakup masa pemerintahan Raja Edward VII hingga awal Perang Dunia I.
-                </p>
-                <a href="#" onclick="alert('Tunggu ya! Koleksi arsip Era Edwardian saat ini sedang dalam proses pemindaian digital dan akan segera hadir.'); return false;" class="link-selengkapnya">Lihat Selengkapnya</a>
-            </div>
-        </div>
 
-        <div class="kategori-card">
-            <img src="{{ url_for('static', filename='img/Visual.jpg') }}" alt="Arsip Visual">
-            <div class="kategori-content">
-                <span class="kategori-tag">MULTIMEDIA</span>
-                <h3>Arsip Visual</h3>
-                <p>Rekaman fotografi piringan kaca dan ilustrasi editorial dari majalah mingguan terpopuler.</p>
-                <a href="#" onclick="alert('Tunggu ya! Koleksi Arsip Visual saat ini sedang dalam proses pemindaian digital dan akan segera hadir.'); return false;" class="link-selengkapnya">Lihat Selengkapnya</a>
-            </div>
-        </div>
-
-        <div class="kategori-card">
-            <img src="{{ url_for('static', filename='img/Warta.jpg') }}" alt="Warta Dagang">
-            <div class="kategori-content">
-                <span class="kategori-tag">EKONOMI</span>
-                <h3>Warta Dagang</h3>
-                <p>Laporan pasar saham harian, iklan niaga klasik, dan catatan ekspor-impor kolonial.</p>
-                <a href="#" onclick="alert('Tunggu ya! Koleksi Warta Dagang saat ini sedang dalam proses pemindaian digital dan akan segera hadir.'); return false;" class="link-selengkapnya">Lihat Selengkapnya</a>
-            </div>
-        </div>
-
-        <div class="kategori-card">
-            <img src="{{ url_for('static', filename='img/parlemen.jpg') }}" alt="Politik">
-            <div class="kategori-content">
-                <span class="kategori-tag">POLITIK</span>
-                <h3>Dokumen Parlemen</h3>
-                <p>Transkrip debat parlemen dan selebaran kampanye politik dari berbagai partai.</p>
-                <a href="#" onclick="alert('Tunggu ya! Koleksi Dokumen Parlemen saat ini sedang dalam proses pemindaian digital dan akan segera hadir.'); return false;" class="link-selengkapnya">Lihat Selengkapnya</a>
-            </div>
-        </div>
-
-        <div class="kategori-card">
-           <img src="{{ url_for('static', filename='img/sastra.jpg') }}" alt="Sastra">
-            <div class="kategori-content">
-                <span class="kategori-tag">SASTRA</span>
-                <h3>Kritik & Puisi</h3>
-                <p>Ulasan buku mingguan, puisi kiriman pembaca, dan esai sastra klasik.</p>
-                <a href="#" onclick="alert('Tunggu ya! Koleksi Sastra saat ini sedang dalam proses pemindaian digital dan akan segera hadir.'); return false;" class="link-selengkapnya">Lihat Selengkapnya</a>
-            </div>
-        </div>
-
-        <div class="kategori-card">
-           <img src="{{ url_for('static', filename='img/Internasional.jpg') }}" alt="Internasional">
-            <div class="kategori-content">
-                <span class="kategori-tag">INTERNASIONAL</span>
-                <h3>Kilasan Berita Internasional</h3>
-                <p>Berita telegraf cepat dari koresponden asing di Eropa, Asia, dan Amerika.</p>
-                <a href="#" onclick="alert('Tunggu ya! Kilasan Berita Internasional saat ini sedang dalam proses pemindaian digital dan akan segera hadir.'); return false;" class="link-selengkapnya">Lihat Selengkapnya</a>
-            </div>
-        </div>
-
+<div class="content-section" style="text-align: center; padding-bottom: 80px;">
+    <h3 style="margin-bottom: 40px; font-size: 28px; color: #1a1611; border-bottom: none; font-family: 'Georgia', serif;">Akses Cepat</h3>
+    
+    <div class="quick-access">
+        <a href="{{ url_for('surat_kabar') }}" class="access-card">
+            <div class="icon-wrapper">📰</div>
+            <h4>Koleksi Surat Kabar</h4>
+            <p>Lihat direktori koleksi surat kabar bersejarah secara lengkap.</p>
+        </a>
+        
+        <a href="{{ url_for('edisi_arsip') }}" class="access-card">
+            <div class="icon-wrapper">📋</div>
+            <h4>Edisi Arsip</h4>
+            <p>Eksplorasi dokumen dan metadata edisi arsip digital.</p>
+        </a>
+        
+        {% if session.get('role') == 'admin' %}
+        <a href="{{ url_for('read_data') }}" class="access-card">
+            <div class="icon-wrapper">🔬</div>
+            <h4>Kelola Peneliti</h4>
+            <p>Registrasi dan manajemen data peneliti terdaftar.</p>
+        </a>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

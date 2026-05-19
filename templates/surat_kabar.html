@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-container">
+    <div class="breadcrumb"><a href="{{ url_for('home') }}">Beranda</a> &rsaquo; Surat Kabar</div>
+
+    <div class="page-header">
+        <h1>📰 Daftar Surat Kabar</h1>
+        {% if session.get('role') == 'admin' %}
+        <a href="{{ url_for('tambah_koleksi') }}" class="btn btn-gold">+ Tambah Surat Kabar</a>
+        {% endif %}
+    </div>
+
+    <div class="search-container">
+        <input type="text" class="search-input" placeholder="Cari judul atau penerbit...">
+        <button class="search-btn">🔍</button>
+    </div>
+
+    {% if data_koran %}
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>NO</th>
+                    <th>NAMA SURAT KABAR</th>
+                    <th>KOTA</th>
+                    <th>TAHUN</th>
+                    <th>PENERBIT</th>
+                    <th>BAHASA</th>
+                    <th style="text-align: center;">DOKUMEN</th>
+                    {% if session.get('role') == 'admin' %}
+                    <th style="text-align: center;">AKSI</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for k in data_koran %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td style="font-weight: bold; color: #2e1a0f;">{{ k.nama_suratkabar }}</td>
+                    <td>{{ k.kota_terbit }}</td>
+                    <td>{{ k.tahun_berdiri }}</td>
+                    <td>{{ k.penerbit }}</td>
+                    <td>{{ k.bahasa_utama }}</td>
+                    
+                    <td style="text-align: center;">
+                        {% if k.dokumen_digital %}
+                        <a href="{{ url_for('static', filename='uploads/pdf/' ~ k.dokumen_digital) }}" target="_blank"
+                            style="display: inline-block; padding: 5px 10px; background-color: #c69c3d; color: white; text-decoration: none; border-radius: 4px; font-size: 13px;">
+                            📄 Buka PDF
+                        </a>
+                        {% else %}
+                        <span style="color: #999; font-style: italic;">Tidak ada file</span>
+                        {% endif %}
+                    </td>
+
+                    {% if session.get('role') == 'admin' %}
+                    <td style="text-align: center;">
+                        <a href="{{ url_for('hapus_koleksi', id=k.id_suratkabar) }}" 
+                           style="color: #c0392b; text-decoration: none; font-size: 18px;" 
+                           title="Hapus" 
+                           onclick="return confirm('Apakah Anda yakin ingin menghapus surat kabar ini?')">
+                           🗑️
+                        </a>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="data-info-bar">
+        0 surat kabar ditemukan
+    </div>
+    <div class="data-empty-body">
+        <span class="data-empty-icon">📄</span>
+        <p class="data-empty-text">Belum ada surat kabar.</p>
+        {% if session.get('role') == 'admin' %}
+        <a href="{{ url_for('tambah_koleksi') }}" class="btn btn-gold">Tambah Surat Kabar</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

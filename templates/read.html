@@ -1,41 +1,21 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Daftar Peneliti - British Library</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-
-    <div class="container">
-        
-        <div class="header-container">
-            <h2>Daftar Peneliti Terdaftar</h2>
-            <a href="{{ url_for('home') }}" class="btn-home">&larr; Kembali ke Home</a>
-        </div>
-        
-        <a href="{{ url_for('register') }}" class="btn-tambah">+ Tambah Peneliti Baru</a>
-        
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Nama Depan</th>
-                <th>Nama Belakang</th>
-                <th>Aksi Manajemen</th>
-            </tr>
-            {% for p in data %}
-            <tr>
-                <td><strong>{{ p.id_peneliti }}</strong></td>
-                <td>{{ p.nama_depan }}</td>
-                <td>{{ p.nama_belakang }}</td>
-                <td>
-                    <a href="/update/{{ p.id_peneliti }}" class="action-link edit">Edit</a>
-                    <a href="/delete/{{ p.id_peneliti }}" class="action-link delete" onclick="return confirm('Apakah Anda yakin ingin menghapus data peneliti ini?')">Hapus</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-container">
+    <div class="breadcrumb"><a href="{{ url_for('home') }}">Beranda</a> &rsaquo; Peneliti</div>
+    
+    <div class="page-header">
+        <h1>🔬 Daftar Peneliti</h1>
+        {% if session.get('role') == 'admin' %}
+            <a href="/register" class="btn btn-gold">+ Daftar Peneliti Baru</a>
+        {% endif %}
     </div>
 
-</body>
-</html>
+    <div class="search-container">
+        <input type="text" class="search-input" placeholder="Cari nama, email, institusi...">
+        <button class="search-btn">🔍</button>
+    </div>
+    
+    <!-- TARUH TABEL PENELITIMU DI BAWAH SINI -->
+    ...
+</div>
+{% endblock %}

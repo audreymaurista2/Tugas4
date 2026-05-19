@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-container" style="display: flex; justify-content: center; padding: 40px 20px;">
+    <div class="form-container" style="width: 100%; max-width: 550px; padding: 40px; border-top: 5px solid #2e1a0f;">
+        <h2 style="text-align: center; color: #2e1a0f; margin-bottom: 25px;">Unggah Edisi Arsip Baru</h2>
+        
+        <form action="{{ url_for('tambah_edisi') }}" method="POST" enctype="multipart/form-data">
+            <label>Pilih Surat Kabar:</label>
+            <select name="id_suratkabar" required>
+                {% for k in koran %}
+                <option value="{{ k.id_suratkabar }}">{{ k.nama_suratkabar }}</option>
+                {% endfor %}
+            </select>
+
+            <div style="display: flex; gap: 15px;">
+                <div style="flex: 1;">
+                    <label>Tanggal Terbit:</label>
+                    <input type="date" name="tanggal_terbit" required>
+                </div>
+                <div style="flex: 1;">
+                    <label>Jumlah Halaman:</label>
+                    <input type="number" name="jumlah_halaman" required>
+                </div>
+            </div>
+
+            <label>Format & Status:</label>
+            <div style="display: flex; gap: 15px;">
+                <input type="text" name="format_digital" placeholder="Contoh: PDF" required style="flex: 1;">
+                <input type="text" name="status_kelengkapan" placeholder="Contoh: Lengkap" required style="flex: 1;">
+            </div>
+
+            <label>File Arsip Digital (PDF):</label>
+            <input type="file" name="file_pdf" accept=".pdf" style="border: 1px dashed #c69c3d; padding: 10px;" required>
+
+            <button type="submit" class="btn-submit" style="background-color: #2e1a0f; margin-top: 20px;">Unggah Edisi</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

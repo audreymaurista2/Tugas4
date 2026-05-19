@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-container">
+    <div class="breadcrumb"><a href="{{ url_for('home') }}">Beranda</a> &rsaquo; Edisi Arsip</div>
+
+    <div class="page-header">
+        <h1>📋 Edisi Arsip Surat Kabar</h1>
+        {% if session.get('role') == 'admin' %}
+        <a href="{{ url_for('tambah_edisi') }}" class="btn btn-gold">+ Unggah Edisi</a>
+        {% endif %}
+    </div>
+
+    <div class="search-container">
+        <input type="text" class="search-input" placeholder="Cari judul koran atau nomor edisi...">
+        <button class="search-btn">🔍</button>
+    </div>
+
+    {% if data_edisi %}
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>NAMA KORAN</th>
+                    <th>TANGGAL EDISI</th>
+                    <th style="text-align: center;">HALAMAN</th>
+                    <th style="text-align: center;">ARSIP DIGITAL</th>
+                    {% if session.get('role') == 'admin' %}
+                    <th style="text-align: center;">AKSI</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in data_edisi %}
+                <tr>
+                    <td style="font-weight: bold; color: #2e1a0f;">
+                        {{ e.surat_kabar.nama_suratkabar }}
+                    </td>
+                    <td>{{ e.tanggal_terbit }}</td>
+                    <td style="text-align: center;">{{ e.jumlah_halaman }} hlm</td>
+
+                    <td style="text-align: center;">
+                        {% if e.file_path %}
+                        <a href="{{ url_for('static', filename='uploads/pdf/' ~ e.file_path) }}" target="_blank"
+                            style="display: inline-block; padding: 5px 12px; background-color: #2e1a0f; color: #d4af37; text-decoration: none; border-radius: 4px; font-size: 13px; border: 1px solid #d4af37;">
+                            📄 Lihat Arsip
+                        </a>
+                        {% else %}
+                        <span style="color: #999; font-style: italic;">Tidak ada file</span>
+                        {% endif %}
+                    </td>
+
+                    {% if session.get('role') == 'admin' %}
+                    <td style="text-align: center;">
+                        <a href="#" style="color: #666; text-decoration: none; margin-right: 10px;" title="Edit">✏️</a>
+
+                        <a href="{{ url_for('hapus_edisi', id=e.id_edisi) }}"
+                            style="color: #c0392b; text-decoration: none;" title="Hapus"
+                            onclick="return confirm('Apakah Anda yakin ingin menghapus edisi ini?')">
+                            🗑️
+                        </a>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="data-info-bar">
+        0 edisi ditemukan
+    </div>
+    <div class="data-empty-body">
+        <span class="data-empty-icon">📋</span>
+        <p class="data-empty-text">Belum ada edisi yang diunggah.</p>
+        {% if session.get('role') == 'admin' %}
+        <a href="{{ url_for('tambah_edisi') }}" class="btn btn-gold">Unggah Edisi Pertama</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

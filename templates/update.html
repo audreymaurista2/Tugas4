@@ -1,16 +1,45 @@
-<!DOCTYPE html>
-<html>
-<head><title>Update Peneliti</title></head>
-<body style="font-family: Arial; padding: 20px;">
-    <h2>Edit Data Peneliti (UPDATE)</h2>
-    <form action="/update/{{ p.id_peneliti }}" method="POST" style="max-width: 300px;">
-        <label>Nama Depan:</label>
-        <input type="text" name="nama_depan" value="{{ p.nama_depan }}" required style="width: 100%; margin-bottom: 10px; padding: 5px;"><br>
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-container" style="display: flex; justify-content: center; align-items: center; padding: 40px 20px;">
+    
+    <div class="form-container" style="width: 100%; max-width: 500px; padding: 40px; border-top: 5px solid #2e1a0f;">
+        <h2 style="text-align: center; color: #2e1a0f; margin-top: 0; border-bottom: 2px solid #e0dcd3; padding-bottom: 15px; margin-bottom: 25px;">
+            Edit Data Peneliti
+        </h2>
         
-        <label>Nama Belakang:</label>
-        <input type="text" name="nama_belakang" value="{{ p.nama_belakang }}" required style="width: 100%; margin-bottom: 10px; padding: 5px;"><br>
-        
-        <button type="submit" style="padding: 10px; background: green; color: white; border: none; width: 100%;">Simpan Perubahan</button>
-    </form>
-</body>
-</html>
+        <form action="/update/{{ p.id_peneliti }}" method="POST">
+            <div style="display: flex; gap: 15px;">
+                <div style="flex: 1;">
+                    <label>Nama Depan:</label>
+                    <input type="text" name="nama_depan" value="{{ p.nama_depan }}" required>
+                </div>
+                <div style="flex: 1;">
+                    <label>Nama Belakang:</label>
+                    <input type="text" name="nama_belakang" value="{{ p.nama_belakang }}" required>
+                </div>
+            </div>
+            
+            <label>Alamat Email:</label>
+            <input type="email" name="alamat_email" value="{{ p.alamat_email }}" required>
+            
+            <label>Institusi / Universitas:</label>
+            <input type="text" name="institusi" value="{{ p.institusi }}" required>
+            
+            <label>Bidang Keahlian:</label>
+            <select name="bidang_keahlian" required>
+                <option value="Sejarah" {% if p.bidang_keahlian == 'Sejarah' %}selected{% endif %}>Sejarah</option>
+                <option value="Sastra" {% if p.bidang_keahlian == 'Sastra' %}selected{% endif %}>Sastra</option>
+                <option value="Sosiologi" {% if p.bidang_keahlian == 'Sosiologi' %}selected{% endif %}>Sosiologi</option>
+                <option value="Lainnya" {% if p.bidang_keahlian == 'Lainnya' %}selected{% endif %}>Lainnya</option>
+            </select>
+            
+            <div style="display: flex; gap: 15px; margin-top: 30px;">
+                <a href="/peneliti" class="btn-submit" style="background-color: #f4f1ea; color: #666; border: 1px solid #ccc; text-align: center; text-decoration: none; flex: 1; display: inline-block; box-sizing: border-box;">Batal</a>
+                
+                <button type="submit" class="btn-submit" style="background-color: #2e1a0f; flex: 1;">Simpan Perubahan</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+{% endblock %}
